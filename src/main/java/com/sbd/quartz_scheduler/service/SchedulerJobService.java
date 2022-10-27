@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Transactional
 @Service
@@ -62,7 +63,6 @@ public class SchedulerJobService {
                             jobInfo.getJobName(),
                             new Date(),
                             jobInfo.getRepeatTime(),
-
                             SimpleTrigger.MISFIRE_INSTRUCTION_FIRE_NOW);
                 }
                 scheduler.scheduleJob(jobDetail, trigger);
@@ -86,16 +86,35 @@ public class SchedulerJobService {
         } else {
             scheduleJob.setJobClass(PrintDateTime.class.getName());
             scheduleJob.setCronJob(false);
-            scheduleJob.setRepeatTime((long) 1);
+            //scheduleJob.setRepeatTime(5000L);
         }
-        if (StringUtils.isEmpty(scheduleJob.getJobId())) {
+        if (Objects.isNull(scheduleJob.getJobId())) {
             log.info("Job Info: {}", scheduleJob);
             scheduleNewJob(scheduleJob);
         } else {
-            log.info("Funcionalidad no implementada!!!");
+            updateScheduleJob(scheduleJob);
         }
-        scheduleJob.setDesc("i am job number " + scheduleJob.getJobId());
+        scheduleJob.setJobDesc("i am job number " + scheduleJob.getJobId());
         scheduleJob.setInterfaceName("interface_" + scheduleJob.getJobId());
         log.info(">>>>> jobName = [" + scheduleJob.getJobName() + "]" + " created.");
+    }
+
+    private void updateScheduleJob(SchedulerJobInfo jobInfo) {
+        Trigger newTrigger;
+        if (jobInfo.getCronJob()) {
+            newTrigger = scheduleCreator.createCronTrigger(jobInfo.getJobName(), new Date(),
+                    jobInfo.getCronExpression(), SimpleTrigger.MISFIRE_INSTRUCTION_FIRE_NOW);
+        } else {
+            newTrigger = scheduleCreator.createSimpleTrigger(jobInfo.getJobName(), new Date(), jobInfo.getRepeatTime(),
+                    SimpleTrigger.MISFIRE_INSTRUCTION_FIRE_NOW);
+        }
+        try {
+            schedulerFactoryBean.getScheduler().rescheduleJob(TriggerKey.triggerKey(jobInfo.getJobName()), newTrigger);
+            jobInfo.setJobStatus("EDITED & SCHEDULED");
+            schedulerRepository.save(jobInfo);
+            log.info(">>>>> jobName = [" + jobInfo.getJobName() + "]" + " updated and scheduled.");
+        } catch (SchedulerException e) {
+            log.error(e.getMessage(), e);
+        }
     }
 }
