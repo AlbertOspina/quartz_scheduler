@@ -57,13 +57,13 @@ public class SchedulerJobService {
                             jobInfo.getJobName(),
                             new Date(),
                             jobInfo.getCronExpression(),
-                            SimpleTrigger.MISFIRE_INSTRUCTION_FIRE_NOW);
+                            SimpleTrigger.MISFIRE_INSTRUCTION_RESCHEDULE_NEXT_WITH_EXISTING_COUNT);
                 } else {
                     trigger = scheduleCreator.createSimpleTrigger(
                             jobInfo.getJobName(),
                             new Date(),
                             jobInfo.getRepeatTime(),
-                            SimpleTrigger.MISFIRE_INSTRUCTION_FIRE_NOW);
+                            SimpleTrigger.MISFIRE_INSTRUCTION_RESCHEDULE_NEXT_WITH_EXISTING_COUNT);
                 }
                 scheduler.scheduleJob(jobDetail, trigger);
                 jobInfo.setJobStatus("SCHEDULED");
@@ -80,11 +80,17 @@ public class SchedulerJobService {
     }
 
     public void saveOrUpdate(SchedulerJobInfo scheduleJob) throws Exception {
+        SchedulerJobInfo repo = schedulerRepository.findByJobName(scheduleJob.getJobName());
+        String myClass = "com.sbd.quartz_scheduler.jobs." + scheduleJob.getJobClass();
+
+        if (!Objects.isNull(repo)){
+            scheduleJob.setJobId(repo.getJobId());
+        }
         if (scheduleJob.getCronExpression().length() > 0) {
             scheduleJob.setJobClass(SimpleCronJob.class.getName());
             scheduleJob.setCronJob(true);
         } else {
-            scheduleJob.setJobClass(PrintDateTime.class.getName());
+            scheduleJob.setJobClass(myClass);
             scheduleJob.setCronJob(false);
             //scheduleJob.setRepeatTime(5000L);
         }
@@ -115,6 +121,18 @@ public class SchedulerJobService {
             log.info(">>>>> jobName = [" + jobInfo.getJobName() + "]" + " updated and scheduled.");
         } catch (SchedulerException e) {
             log.error(e.getMessage(), e);
+        }
+    }
+
+    public boolean deleteJob(SchedulerJobInfo jobInfo) {
+        try {
+            SchedulerJobInfo getJobInfo = schedulerRepository.findByJobName(jobInfo.getJobName());
+            schedulerRepository.delete(getJobInfo);
+            log.info(">>>>> jobName = [" + jobInfo.getJobName() + "]" + " deleted.");
+            return schedulerFactoryBean.getScheduler().deleteJob(new JobKey(jobInfo.getJobName(), jobInfo.getJobGroup()));
+        } catch (SchedulerException e) {
+            log.error("Failed to delete job - {}", jobInfo.getJobName(), e);
+            return false;
         }
     }
 }

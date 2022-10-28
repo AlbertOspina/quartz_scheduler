@@ -1,5 +1,5 @@
 spring:
-  port: 8090
+  port: {$port}
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/testdb
