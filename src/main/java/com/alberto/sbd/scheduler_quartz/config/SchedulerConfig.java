@@ -28,14 +28,15 @@ public class SchedulerConfig {
         SchedulerJobFactory jobFactory = new SchedulerJobFactory();
         jobFactory.setApplicationContext(applicationContext);
 
-        //Properties properties = new Properties();
+        Properties properties = new Properties();
+        properties.put("org.quartz.threadPool.threadCount", "5");
         //properties.putAll(quartzProperties.getProperties());
 
         SchedulerFactoryBean factory = new SchedulerFactoryBean();
         factory.setOverwriteExistingJobs(true);
         factory.setDataSource(dataSource);
-        //factory.setQuartzProperties(properties);
-        factory.setWaitForJobsToCompleteOnShutdown(true);
+        factory.setQuartzProperties(properties);
+        //factory.setWaitForJobsToCompleteOnShutdown(true);
         factory.setJobFactory(jobFactory);
         return factory;
     }

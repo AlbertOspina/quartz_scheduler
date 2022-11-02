@@ -20,7 +20,7 @@ public class JobDTO {
     private String jobName;
     private String jobGroup;
     private String jobStatus; //Setted by service
-    private String jobClass; //Setted by service
+    private String jobClass;
     private String cronExpression;
     private String jobDesc; //Setted by service
     private String interfaceName; //Setted by service
@@ -28,3 +28,10 @@ public class JobDTO {
     private Boolean cronJob; //Setted by service
 }
 
+
+/*
+{
+        "jobName": "Print0842",
+        "jobGroup": "Test4",
+        "jobClass": "PrintDateTime",
+        "repeatTime": 17000 }*/

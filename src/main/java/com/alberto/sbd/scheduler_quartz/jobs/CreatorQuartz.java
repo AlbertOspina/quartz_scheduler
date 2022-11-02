@@ -5,6 +5,7 @@ import org.quartz.CronTrigger;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SimpleTrigger;
+import org.quartz.plugins.interrupt.JobInterruptMonitorPlugin;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
 import org.springframework.scheduling.quartz.JobDetailFactoryBean;
@@ -48,15 +49,16 @@ public class CreatorQuartz {
                                ApplicationContext context, String jobName, String jobGroup) {
         JobDetailFactoryBean factoryBean = new JobDetailFactoryBean();
         factoryBean.setJobClass(jobClass);
-        factoryBean.setDurability(false);
+        factoryBean.setDurability(isDurable);
         factoryBean.setApplicationContext(context);
         factoryBean.setName(jobName);
         factoryBean.setGroup(jobGroup);
-        factoryBean.setRequestsRecovery(false);
+        factoryBean.setRequestsRecovery(true);
 
         // Set job data map
         JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.put(jobName + jobGroup, jobClass.getName());
+        jobDataMap.put(JobInterruptMonitorPlugin.AUTO_INTERRUPTIBLE, "true");
         factoryBean.setJobDataMap(jobDataMap);
         factoryBean.afterPropertiesSet();
         return factoryBean.getObject();

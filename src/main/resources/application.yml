@@ -27,5 +27,9 @@ spring:
         tablePrefix: QRTZ_
         isClustered: true
         clusterCheckinInterval: 1000
+      org.quartz.plugin.jobInterruptor:
+        class: org.quartz.plugins.interrupt.JobInterruptMonitorPlugin
+        defaultMaxRunTime: 90000
+
 
 
