@@ -19,6 +19,7 @@ public class MyController {
     public void createTask(@RequestBody JobDTO myJob){
         log.info(String.valueOf(myJob));
         try {
+            myJob.setCronExpression("");
             schedulerJobService.saveOrUpdate(myJob);
         } catch (Exception e) {
             throw new RuntimeException(e);

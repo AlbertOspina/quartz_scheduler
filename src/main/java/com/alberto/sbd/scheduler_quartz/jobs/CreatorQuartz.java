@@ -48,7 +48,7 @@ public class CreatorQuartz {
                                ApplicationContext context, String jobName, String jobGroup) {
         JobDetailFactoryBean factoryBean = new JobDetailFactoryBean();
         factoryBean.setJobClass(jobClass);
-        factoryBean.setDurability(isDurable);
+        factoryBean.setDurability(false);
         factoryBean.setApplicationContext(context);
         factoryBean.setName(jobName);
         factoryBean.setGroup(jobGroup);

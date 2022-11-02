@@ -126,10 +126,16 @@ public class SchedulerJobService {
 
     public boolean deleteJob(JobDTO jobInfo) {
         try {
-            JobDTO getJobInfo = schedulerRepository.findByJobName(jobInfo.getJobName());
-            schedulerRepository.delete(getJobInfo);
-            log.info(">>>>> jobName = [" + jobInfo.getJobName() + "]" + " deleted.");
-            return schedulerFactoryBean.getScheduler().deleteJob(new JobKey(jobInfo.getJobName(), jobInfo.getJobGroup()));
+            JobDTO JobRepo = schedulerRepository.findByJobName(jobInfo.getJobName());
+
+            if (schedulerFactoryBean.getScheduler().deleteJob(new JobKey(JobRepo.getJobName(), JobRepo.getJobGroup())))
+            {
+                schedulerRepository.delete(JobRepo);
+                log.info(">>>>> jobName = [" + jobInfo.getJobName() + "]" + " deleted.");
+                return true;
+            }
+            log.info(">>>>> jobName = [" + jobInfo.getJobName() + "]" + " could not be deleted.");
+            return false;
         } catch (SchedulerException e) {
             log.error("Failed to delete job - {}", jobInfo.getJobName(), e);
             return false;

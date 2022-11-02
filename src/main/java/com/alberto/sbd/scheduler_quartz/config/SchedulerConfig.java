@@ -28,13 +28,14 @@ public class SchedulerConfig {
         SchedulerJobFactory jobFactory = new SchedulerJobFactory();
         jobFactory.setApplicationContext(applicationContext);
 
-        Properties properties = new Properties();
-        properties.putAll(quartzProperties.getProperties());
+        //Properties properties = new Properties();
+        //properties.putAll(quartzProperties.getProperties());
 
         SchedulerFactoryBean factory = new SchedulerFactoryBean();
         factory.setOverwriteExistingJobs(true);
         factory.setDataSource(dataSource);
-        factory.setQuartzProperties(properties);
+        //factory.setQuartzProperties(properties);
+        factory.setWaitForJobsToCompleteOnShutdown(true);
         factory.setJobFactory(jobFactory);
         return factory;
     }
