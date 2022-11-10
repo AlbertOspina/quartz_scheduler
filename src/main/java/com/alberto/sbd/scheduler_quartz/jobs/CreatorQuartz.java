@@ -53,7 +53,7 @@ public class CreatorQuartz {
         factoryBean.setApplicationContext(context);
         factoryBean.setName(jobName);
         factoryBean.setGroup(jobGroup);
-        factoryBean.setRequestsRecovery(true);
+        factoryBean.setRequestsRecovery(false);
 
         // Set job data map
         JobDataMap jobDataMap = new JobDataMap();
