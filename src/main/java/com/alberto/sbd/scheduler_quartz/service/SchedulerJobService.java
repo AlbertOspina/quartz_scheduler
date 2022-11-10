@@ -130,8 +130,11 @@ public class SchedulerJobService {
 
             if (schedulerFactoryBean.getScheduler().deleteJob(new JobKey(JobRepo.getJobName(), JobRepo.getJobGroup())))
             {
+                // Interrumpir job inmediatamente
+                schedulerFactoryBean.getScheduler().interrupt(new JobKey(JobRepo.getJobName(), JobRepo.getJobGroup()));
                 schedulerRepository.delete(JobRepo);
                 log.info(">>>>> jobName = [" + jobInfo.getJobName() + "]" + " deleted.");
+
                 return true;
             }
             log.info(">>>>> jobName = [" + jobInfo.getJobName() + "]" + " could not be deleted.");
