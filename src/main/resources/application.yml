@@ -10,26 +10,26 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-  quartz:
-    properties:
-      org.quartz.scheduler:
-        instanceName: spring-boot-quartz
-        instanceId: AUTO
-      org.quartz.threadPool:
-        class: org.quartz.simpl.SimpleThreadPool
-        threadCount: 5
-        threadPriority: 5
-      org.quartz.jobStore:
-        misfireThreshold: 1000
-        class: org.quartz.impl.jdbcjobstore.JobStoreTX
-        driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
-        useProperties: true
-        tablePrefix: QRTZ_
-        isClustered: true
-        clusterCheckinInterval: 1000
-      org.quartz.plugin.jobInterruptor:
-        class: org.quartz.plugins.interrupt.JobInterruptMonitorPlugin
-        defaultMaxRunTime: 90000
+#  quartz:
+#    properties:
+#      org.quartz.scheduler:
+#        instanceName: spring-boot-quartz
+#        instanceId: AUTO
+#      org.quartz.threadPool:
+#        class: org.quartz.simpl.SimpleThreadPool
+#        threadCount: 5
+#        threadPriority: 5
+#      org.quartz.jobStore:
+#        misfireThreshold: 1000
+#        class: org.quartz.impl.jdbcjobstore.JobStoreTX
+#        driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+#        useProperties: true
+#        tablePrefix: QRTZ_
+#        isClustered: true
+#        clusterCheckinInterval: 5000
+#      org.quartz.plugin.jobInterruptor:
+#        class: org.quartz.plugins.interrupt.JobInterruptMonitorPlugin
+#        defaultMaxRunTime: 90000
 
 
 

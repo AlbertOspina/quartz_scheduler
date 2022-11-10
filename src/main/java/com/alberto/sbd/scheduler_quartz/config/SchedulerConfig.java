@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.quartz.QuartzProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import javax.sql.DataSource;
@@ -19,8 +20,8 @@ public class SchedulerConfig {
     @Autowired
     private ApplicationContext applicationContext;
 
-    @Autowired
-    private QuartzProperties quartzProperties;
+    //@Autowired
+    //private QuartzProperties quartzProperties;
 
     @Bean
     public SchedulerFactoryBean schedulerFactoryBean() {
@@ -28,14 +29,17 @@ public class SchedulerConfig {
         SchedulerJobFactory jobFactory = new SchedulerJobFactory();
         jobFactory.setApplicationContext(applicationContext);
 
-        Properties properties = new Properties();
+        /*Properties properties = new Properties();
         properties.put("org.quartz.threadPool.threadCount", "5");
-        //properties.putAll(quartzProperties.getProperties());
+        properties.put("org.quartz.scheduler.instanceId", "AUTO");
+        properties.put("org.quartz.jobStore.isClustered", "true");
+        properties.putAll(quartzProperties.getProperties());*/
 
         SchedulerFactoryBean factory = new SchedulerFactoryBean();
         factory.setOverwriteExistingJobs(true);
         factory.setDataSource(dataSource);
-        factory.setQuartzProperties(properties);
+        factory.setConfigLocation(new ClassPathResource("quartz.properties"));
+        //factory.setQuartzProperties(properties);
         //factory.setWaitForJobsToCompleteOnShutdown(true);
         factory.setJobFactory(jobFactory);
         return factory;
